@@ -22,14 +22,13 @@ Hệ thống Quản lý Quán Cafe/Trà Sữa được xây dựng nhằm:
    * Xem menu (tên, giá, mô tả, hình ảnh).
    * Chọn món, thêm ghi chú khẩu vị, đặt hàng.
    * Thanh toán bằng tiền mặt hoặc QR.
-   * Nhận hóa đơn (giấy/PDF).
    * Đánh giá dịch vụ (tùy chọn).
 
 2. **Nhân viên/Thu ngân**
 
    * Nhập order của khách và gửi đến pha chế.
    * Áp dụng khuyến mãi, giảm giá.
-   * Xử lý thanh toán, in hóa đơn.
+   * Xử lý thanh toán.
    * Theo dõi trạng thái order (**Mới → Đang làm → Hoàn thành**).
    * Cập nhật/hủy order theo yêu cầu khách.
 
@@ -54,7 +53,7 @@ Hệ thống Quản lý Quán Cafe/Trà Sữa được xây dựng nhằm:
 * `email` : địa chỉ email (String)
 * `gender` : giới tính (String)
 * `dob` : ngày sinh (Date)
-* `address` : địa chỉ giao hàng (String, tùy chọn)
+* `address` : địa chỉ giao hàng (String)
 * `created_at` : ngày tạo tài khoản (DateTime)
 
 **Đơn hàng (Order)**
@@ -91,7 +90,6 @@ Hệ thống Quản lý Quán Cafe/Trà Sữa được xây dựng nhằm:
 * Tính tiền, áp dụng khuyến mãi/giảm giá.
 * Ghi nhận phương thức thanh toán.
 * Cập nhật order (hủy/sửa).
-* In hóa đơn cho khách.
 
 ### 3. Quản lý / Chủ quán (Admin / Manager)
 
