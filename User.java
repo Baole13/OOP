@@ -1,5 +1,5 @@
+
 public class User {
-  
     private String id;
     private String name;
     private String username;
@@ -9,38 +9,78 @@ public class User {
     private String gender;
     private String dob;
     private String address;
-    private String createdAt;
+    private String created_at;
 
-
-
-    public void login(String username, String password) {
-        
-    }
-
-    public void logout() {
-        System.out.println("User logged out.");
-    }
-
-    public void getInfor() {
-        System.out.println("ID: " + id);
-        System.out.println("Name: " + name);
-        System.out.println("Username: " + username);
-        System.out.println("Phone: " + phone);
-        System.out.println("Email: " + email);
-        System.out.println("Gender: " + gender);
-        System.out.println("Date of Birth: " + dob);
-        System.out.println("Address: " + address);
-        System.out.println("Created At: " + createdAt);
-    }
-
-    public void setInfor(String name, String phone, String email, String gender, String dob, String address) {
+    public User(String id, String name, String username, String password,String phone, String email, String gender,String dob,String address,String created_at ) {
+        this.id = id;
         this.name = name;
+        this.username = username;
+        this.password = password;
         this.phone = phone;
         this.email = email;
-        this.gender = gender;
+        this. gender = gender;
         this.dob = dob;
         this.address = address;
+        this.created_at = created_at;
     }
 
-    
+    public void init() {}
+    public void login() {}
+    public void logout() {}
+
+    public String getId() { 
+        return id; 
+    }
+
+    public String getName() { 
+        return name; 
+    }
+
+    public void setName(String name) {
+            if (name != null && !name.trim().isEmpty()) {
+                this.name = name.trim();
+            }
+        }
+    public String getUsername() { 
+        return username; 
+    }
+
+    public String getPassword() { 
+        return password; 
+    }
+
+    public String getPhone() { 
+        return phone; 
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        if (phoneNumber != null && !phoneNumber.trim().isEmpty()) {
+            this.phone = phoneNumber.trim();
+        }
+    }
+
+    public String getEmail() { 
+        return email; 
+    }
+
+    public void setEmail(String email) {
+            if (email != null && email.contains("@")) {
+                this.email = email.trim();
+            }
+        }
+    public String getGender() { 
+        return gender; 
+    }
+
+    public String getDob() { 
+        return dob; 
+    }
+
+    public String getAddress() { 
+        return address; 
+    }
+
+    public String getCreatedAt() { 
+        return created_at; 
+    }
 }

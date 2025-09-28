@@ -1,6 +1,6 @@
 import java.util.*;
 
-class Product {
+public class Product {
     private String product_id;
     private String name;
     private String description;
@@ -9,45 +9,45 @@ class Product {
     private String image_url;
     private boolean is_available;
 
-    public Product(String product_id, String name, String description, double price, String category, String image_url, boolean is_available) {
+    public Product(String product_id,String name,String description,double price,String category,String image_url,boolean is_available) {
         this.product_id = product_id;
         this.name = name;
-        this.description = description;
+        this.description = description; 
         this.price = price;
         this.category = category;
         this.image_url = image_url;
         this.is_available = is_available;
     }
 
-    public String getProductId() {
-        return product_id;
+    public double calculatePrice(Map<String, Object> options) {
+         return price; 
     }
 
-    public String getName() {
-        return name;
+    public void updatePrice(double new_price) { 
+        this.price = new_price; 
     }
 
-    public String getCategory() {
-        return category;
+    public void setName(String name) {
+        if (name != null && !name.trim().isEmpty()) {
+            this.name = name.trim();
+        }
     }
+    
+    public void setDescription(String description) {
+        this.description = description != null ? description.trim() : "";
+    }
+    
+    public String getProductId() { return product_id; }
 
-    public double getPrice() {
-        return price;
-    }
+    public String getName() { return name; }
 
-    public boolean isAvailable() {
-        return is_available;
-    }
+    public String getDescription() { return description; }
 
-    public double calculate_price(Map<String, Double> options) {
-        return;
-    }
+    public double getPrice() { return price; }
 
-    public void update_price(double new_price) {
-        return
-    }
+    public String getCategory() { return category; }
 
-    public String toString() {
-        return;
-    }
+    public String getImageUrl() { return image_url; }
+
+    public boolean isAvailable() { return is_available; }
 }

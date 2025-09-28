@@ -1,30 +1,30 @@
+//import catalog.Menu;
+//import catalog.Product;
 import java.util.List;
-import java.util.Map;
 
 public class Customer {
     private String id;
     private String name;
-    private Map<String, String> defaultPreferences;
-    private double loyaltyPoint;
+    private double loyalty_point;
 
-  
-    public Customer(String id, String name, Map<String, String> defaultPreferences, double loyaltyPoint) {
+    public Customer(String id,String name,double loyalty_point) {
         this.id = id;
         this.name = name;
-        this.defaultPreferences = defaultPreferences;
-        this.loyaltyPoint = loyaltyPoint;
+        this.loyalty_point = loyalty_point;
     }
+
+    public List<Product> viewMenu(Menu menu) { return null; }
+    public void addNote(String note) {}
+    public void addFeedback(String orderId) {}
 
     
-    public List<Product> viewMenu(Menu menu) {
-       
-    }
+    public String getId() { return id; }
+    public String getName() { return name; }
+    public double getLoyaltyPoint() { return loyalty_point; }
 
-    public void addNote(String note) {
-        
-    }
-
-    public String addFeedback(String orderId) {
-        
+    public void setName(String name) {
+        if (name != null && !name.trim().isEmpty()) {
+            this.name = name.trim();
+        }
     }
 }
