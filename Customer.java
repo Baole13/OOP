@@ -22,7 +22,6 @@ public class Customer {
         this.registrationDate = LocalDateTime.now();
     }
 
-    // Constructor for sample data
     public Customer(int customerId, String name, String email, String phoneNumber, 
                    java.time.LocalDate registrationDate, int totalOrders, double totalSpent, double loyaltyPoints) {
         this.customerId = customerId;

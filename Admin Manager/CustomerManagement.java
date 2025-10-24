@@ -82,7 +82,7 @@ public class CustomerManagement {
 
         Customer customer = findCustomerById(customerId);
         if (customer == null) {
-            System.out.println("❌ Không tìm thấy khách hàng có ID này.");
+            System.out.println("Không tìm thấy khách hàng có ID này.");
             return;
         }
 
@@ -131,7 +131,7 @@ public class CustomerManagement {
     // thống kê khách hàng
     private void customerStatistics() {
         if (customers.isEmpty()) {
-            System.out.println("\n⚠️ Chưa có dữ liệu khách hàng để thống kê.");
+            System.out.println("\nChưa có dữ liệu khách hàng để thống kê.");
             return;
         }
 
@@ -149,7 +149,6 @@ public class CustomerManagement {
                     " (" + (int) topCustomer.getTotalSpent() + " VNĐ)");
     }
 
-    // ====== HÀM HỖ TRỢ ======
     private Customer findCustomerById(int id) {
         for (Customer c : customers) {
             if (c.getCustomerId() == id) return c;

@@ -32,7 +32,7 @@ public class ManagementView {
 
     // Đăng nhập quản trị viên
     private boolean authenticate() {
-        System.out.print("🔐 Nhập mật khẩu quản trị: ");
+        System.out.print("Nhập mật khẩu quản trị: ");
         String password = scanner.nextLine().trim();
         return "admin123".equals(password);
     }
@@ -47,7 +47,7 @@ public class ManagementView {
             System.out.println("4. Quản lý khách hàng");
             System.out.println("5. Trạng thái hệ thống");
             System.out.println("6. Thoát");
-            System.out.print("👉 Chọn tùy chọn (1-6): ");
+            System.out.print("Chọn tùy chọn (1-6): ");
 
             int choice = getIntInput();
 
@@ -71,7 +71,7 @@ public class ManagementView {
         System.out.println("\n💡 [Trạng thái hệ thống]");
         System.out.println("Thời gian hiện tại: " +
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
-        System.out.println("Hệ thống hoạt động ổn định ✅");
+        System.out.println("Hệ thống hoạt động ổn định ");
     }
 
     private int getIntInput() {
@@ -79,7 +79,7 @@ public class ManagementView {
             try {
                 return Integer.parseInt(scanner.nextLine().trim());
             } catch (NumberFormatException e) {
-                System.out.print("⚠️ Vui lòng nhập số hợp lệ: ");
+                System.out.print("Vui lòng nhập số hợp lệ: ");
             }
         }
     }

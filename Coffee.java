@@ -29,8 +29,7 @@ public class Coffee extends MenuItem {
     @Override
     public double calculatePrice() {
         double price = getBasePrice();
-        
-        // Size pricing
+    
         switch (size.toLowerCase()) {
             case "small":
                 price *= 0.8;
@@ -41,17 +40,16 @@ public class Coffee extends MenuItem {
             case "extra large":
                 price *= 1.5;
                 break;
-            default: // medium
+            default: 
                 break;
         }
         
-        // Add-ons
+       
         if (hasMilk) {
-            price += 5000; // 5k VND for milk
+            price += 5000;
         }
         if (hasSugar) {
-            price += 2000; // 2k VND for sugar
-        }
+            price += 2000; 
         
         return price;
     }
@@ -97,4 +95,5 @@ public class Coffee extends MenuItem {
         if (hasSugar) sb.append(" | With Sugar");
         return sb.toString();
     }
+}
 }

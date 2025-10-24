@@ -25,7 +25,7 @@ public class MenuManagement {
                 case 4 -> removeMenuItem();
                 case 5 -> searchMenuItems();
                 case 6 -> {
-                    System.out.println("🔙 Quay lại menu chính...");
+                    System.out.println("Quay lại menu chính...");
                     return;
                 }
                 default -> System.out.println("Lựa chọn không hợp lệ, vui lòng thử lại.");
@@ -40,7 +40,7 @@ public class MenuManagement {
 
     private void displayMenuItems(List<MenuItem> list, String title) {
         if (list.isEmpty()) {
-            System.out.println("\n⚠️ Không có món nào trong danh sách.");
+            System.out.println("\n Không có món nào trong danh sách.");
             return;
         }
 
@@ -132,7 +132,7 @@ public class MenuManagement {
         System.out.println("Cập nhật món thành công!");
     }
 
-    // ====== XÓA MÓN ======
+  
     private void removeMenuItem() {
         System.out.print("Nhập ID món cần xóa: ");
         int itemId = getIntInput();
@@ -154,7 +154,7 @@ public class MenuManagement {
         }
     }
 
-    // ====== TÌM KIẾM MÓN ======
+   
     private void searchMenuItems() {
         System.out.print("Nhập từ khóa (tên hoặc loại món): ");
         String keyword = scanner.nextLine().trim().toLowerCase();

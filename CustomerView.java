@@ -48,7 +48,7 @@ public class CustomerView {
                 case 6 -> loginCustomer();
                 case 7 -> viewOrderHistory();
                 case 8 -> {
-                    System.out.println("Cảm ơn bạn đã ghé thăm! Tạm biệt! 👋");
+                    System.out.println("Cảm ơn bạn đã ghé thăm! Tạm biệt!");
                     return;
                 }
                 default -> System.out.println("Lựa chọn không hợp lệ. Vui lòng thử lại.");
@@ -58,7 +58,7 @@ public class CustomerView {
 
     private void viewMenu() {
         if (menuItems.isEmpty()) {
-            System.out.println("\n⚠️ Thực đơn hiện đang trống.");
+            System.out.println("\nThực đơn hiện đang trống.");
             return;
         }
 
@@ -104,7 +104,7 @@ public class CustomerView {
 
         MenuItem selectedItem = findMenuItemById(itemId);
         if (selectedItem == null) {
-            System.out.println("❌ Không tìm thấy món có ID này.");
+            System.out.println("Không tìm thấy món có ID này.");
             return;
         }
 
@@ -112,12 +112,12 @@ public class CustomerView {
         int quantity = getIntInput();
 
         if (quantity <= 0) {
-            System.out.println("❌ Số lượng phải lớn hơn 0.");
+            System.out.println("Số lượng phải lớn hơn 0.");
             return;
         }
 
         currentOrder.addItem(selectedItem, quantity);
-        System.out.println("✅ Đã thêm " + selectedItem.getName() + " x" + quantity + " vào giỏ hàng!");
+        System.out.println("Đã thêm " + selectedItem.getName() + " x" + quantity + " vào giỏ hàng!");
     }
 
     private void assignTable() {
@@ -126,7 +126,7 @@ public class CustomerView {
                 .toList();
 
         if (availableTables.isEmpty()) {
-            System.out.println("⚠️ Hiện tại không có bàn trống. Vui lòng chờ hoặc chọn Takeaway.");
+            System.out.println("Hiện tại không có bàn trống. Vui lòng chờ hoặc chọn Takeaway.");
             return;
         }
 
@@ -145,15 +145,15 @@ public class CustomerView {
         if (selectedTable != null && selectedTable.getStatus() == Table.TableStatus.AVAILABLE) {
             selectedTable.occupyTable(currentCustomer != null ? currentCustomer.getCustomerId() : 0);
             currentOrder.setTableNumber(tableNumber);
-            System.out.println("✅ Đã đặt bàn số " + tableNumber);
+            System.out.println("Đã đặt bàn số " + tableNumber);
         } else {
-            System.out.println("❌ Bàn không khả dụng.");
+            System.out.println("Bàn không khả dụng.");
         }
     }
 
     private void viewCart() {
         if (currentOrder == null || currentOrder.isEmpty()) {
-            System.out.println("\n🛒 Giỏ hàng trống.");
+            System.out.println("\nGiỏ hàng trống.");
             return;
         }
 
@@ -163,7 +163,7 @@ public class CustomerView {
 
     private void checkout() {
         if (currentOrder == null || currentOrder.isEmpty()) {
-            System.out.println("\n🛒 Giỏ hàng trống. Không thể thanh toán.");
+            System.out.println("\nGiỏ hàng trống. Không thể thanh toán.");
             return;
         }
 
@@ -181,7 +181,7 @@ public class CustomerView {
                 currentCustomer.addOrder(currentOrder);
             }
 
-            System.out.println("✅ Đơn hàng đã được xác nhận!");
+            System.out.println("Đơn hàng đã được xác nhận!");
             System.out.println("Mã đơn hàng: #" + currentOrder.getOrderId());
             System.out.println("Cảm ơn bạn đã đặt hàng! 🙏");
 
@@ -207,7 +207,7 @@ public class CustomerView {
         customers.add(newCustomer);
         currentCustomer = newCustomer;
 
-        System.out.println("✅ Đăng ký thành công! Chào mừng " + name + "!");
+        System.out.println("Đăng ký thành công! Chào mừng " + name + "!");
     }
 
     private void loginCustomer() {
@@ -226,15 +226,15 @@ public class CustomerView {
 
         if (foundCustomer != null) {
             currentCustomer = foundCustomer;
-            System.out.println("✅ Đăng nhập thành công! Chào mừng " + foundCustomer.getName() + "!");
+            System.out.println("Đăng nhập thành công! Chào mừng " + foundCustomer.getName() + "!");
         } else {
-            System.out.println("❌ Không tìm thấy tài khoản. Vui lòng đăng ký trước.");
+            System.out.println("Không tìm thấy tài khoản. Vui lòng đăng ký trước.");
         }
     }
 
     private void viewOrderHistory() {
         if (currentCustomer == null) {
-            System.out.println("\n⚠️ Vui lòng đăng nhập để xem lịch sử đơn hàng.");
+            System.out.println("\nVui lòng đăng nhập để xem lịch sử đơn hàng.");
             return;
         }
 
@@ -243,7 +243,7 @@ public class CustomerView {
                 .toList();
 
         if (customerOrders.isEmpty()) {
-            System.out.println("\n📋 Bạn chưa có đơn hàng nào.");
+            System.out.println("\nBạn chưa có đơn hàng nào.");
             return;
         }
 
@@ -255,7 +255,7 @@ public class CustomerView {
     }
 
     private void initializeData() {
-        // Initialize sample menu items
+        
         menuItems.add(new Coffee(1, "Cà phê đen", 25000, "Coffee", "Cà phê đen truyền thống"));
         menuItems.add(new Coffee(2, "Cà phê sữa", 30000, "Coffee", "Cà phê sữa đặc biệt"));
         menuItems.add(new Coffee(3, "Cappuccino", 45000, "Coffee", "Cappuccino Ý"));
@@ -277,12 +277,12 @@ public class CustomerView {
         };
         menuItems.add(cake);
 
-        // Initialize sample tables
+        
         for (int i = 1; i <= 10; i++) {
             tables.add(new Table(i, 4));
         }
 
-        // Initialize sample customers
+      
         customers.add(new Customer(1, "Nguyễn Văn A", "a@gmail.com", "0901234567"));
         customers.add(new Customer(2, "Trần Thị B", "b@gmail.com", "0912345678"));
     }
@@ -306,7 +306,7 @@ public class CustomerView {
             try {
                 return Integer.parseInt(scanner.nextLine().trim());
             } catch (NumberFormatException e) {
-                System.out.print("⚠️ Vui lòng nhập số hợp lệ: ");
+                System.out.print("Vui lòng nhập số hợp lệ: ");
             }
         }
     }
