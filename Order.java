@@ -1,59 +1,252 @@
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Order {
+    public enum OrderStatus {
+        PENDING, CONFIRMED, PREPARING, READY, COMPLETED, CANCELLED
+    }
+    
     public enum ServiceType {
         DINE_IN, TAKEAWAY
     }
-
-    private String order_id;
-    private Customer customer_id;
-    private List<OrderItem> items;
-    private String status;
+    
+    private int orderId;
+    private int customerId;
+    private List<OrderItem> orderItems;
+    private OrderStatus status;
     private ServiceType serviceType;
-    private String service_type;
-    private String notes;
+    private LocalDateTime orderTime;
+    private LocalDateTime completionTime;
+    private double subtotal;
+    private double tax;
     private double discount;
-    private String created_at;
-    private int tableNumber;
-
-    public Order(String order_id, Customer customer_id,List<OrderItem> items,String service_type, String notes, double discount,String created_at, int tableNumber, ServiceType serviceType) {
-        this.order_id = order_id;
-        this.customer_id = customer_id;
-        this.items = items;
-        this.service_type = service_type;
-        this.notes = notes;
-        this.discount = discount;
-        this.created_at = created_at;
-        this.tableNumber = tableNumber;
-        this.service_type = service_type;
+    private double totalAmount;
+    private int tableNumber; 
+    private String specialInstructions;
+    
+ 
+    public Order(int orderId, int customerId, ServiceType serviceType) {
+        this.orderId = orderId;
+        this.customerId = customerId;
+        this.serviceType = serviceType;
+        this.orderItems = new ArrayList<>();
+        this.status = OrderStatus.PENDING;
+        this.orderTime = LocalDateTime.now();
+        this.tableNumber = -1;
+        this.specialInstructions = "";
+        this.tax = 0.0;
+        this.discount = 0.0;
     }
 
-    public void addItem(Product p, int qty, Map<String, Object> options) {}
-    public void removeItem(String productId) {}
-    public void applyDiscount(double amount) {}
-    public double subtotal() { return 0.0; }
-    public double tax() { return 0.0; }
-    public double total() { return 0.0; }
-    public void setStatus(String status) { this.status = status; }
+    public Order() {
+    this.orderItems = new ArrayList<>();
+    this.status = OrderStatus.PENDING;
+    this.orderTime = LocalDateTime.now();
+    this.tableNumber = -1;
+    this.specialInstructions = "";
+    this.tax = 0.0;
+    this.discount = 0.0;
+}
+    
 
-    public String getOrderId() { return order_id; }
-    public Customer getCustomer() { return customer_id; }
-    public List<OrderItem> getItems() { return items; }
-    public String getServiceType() { return service_type; }
-    public String getNotes() { return notes; }
-    public double getDiscount() { return discount; }
-    public String getCreatedAt() { return created_at; }
-
+    public int getOrderId() {
+        return orderId;
+    }
+    
+    public int getCustomerId() {
+        return customerId;
+    }
+    
+    public List<OrderItem> getOrderItems() {
+        return new ArrayList<>(orderItems);
+    }
+    
+    public OrderStatus getStatus() {
+        return status;
+    }
+    
+    public ServiceType getServiceType() {
+        return serviceType;
+    }
+    
+    public LocalDateTime getOrderTime() {
+        return orderTime;
+    }
+    
+    public LocalDateTime getCompletionTime() {
+        return completionTime;
+    }
+    
+    public double getSubtotal() {
+        return subtotal;
+    }
+    
+    public double getTax() {
+        return tax;
+    }
+    
+    public double getDiscount() {
+        return discount;
+    }
+    
+    public double getTotalAmount() {
+        return totalAmount;
+    }
+    
+    public int getTableNumber() {
+        return tableNumber;
+    }
+    
+    public String getSpecialInstructions() {
+        return specialInstructions;
+    }
+    
+  
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+        if (status == OrderStatus.COMPLETED) {
+            this.completionTime = LocalDateTime.now();
+        }
+    }
+    
     public void setTableNumber(int tableNumber) {
         if (serviceType == ServiceType.DINE_IN && tableNumber > 0) {
             this.tableNumber = tableNumber;
         }
     }
-
+    
+    public void setSpecialInstructions(String specialInstructions) {
+        this.specialInstructions = specialInstructions != null ? specialInstructions : "";
+    }
+    
     public void setDiscount(double discount) {
         if (discount >= 0) {
             this.discount = discount;
-            total();
+            calculateTotal();
         }
+    }
+    public void setOrderId(int orderId) {
+    this.orderId = orderId;
+    }
+
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
+
+    public void setServiceType(ServiceType serviceType) {
+        this.serviceType = serviceType;
+    }
+
+    public void setOrderTime(LocalDateTime orderTime) {
+        this.orderTime = orderTime;
+    }
+    public void setOrderItems(List<OrderItem> items) { this.orderItems = items; }
+
+
+
+    
+    
+ 
+    public void addItem(MenuItem menuItem, int quantity) {
+        if (menuItem != null && quantity > 0) {
+            for (OrderItem item : orderItems) {
+                if (item.getMenuItem().getId() == menuItem.getId()) {
+                    item.setQuantity(item.getQuantity() + quantity);
+                    calculateTotal();
+                    return;
+                }
+            }
+            orderItems.add(new OrderItem(menuItem, quantity));
+            calculateTotal();
+        }
+    }
+    
+    public void removeItem(int menuItemId) {
+        orderItems.removeIf(item -> item.getMenuItem().getId() == menuItemId);
+        calculateTotal();
+    }
+    
+    public void updateItemQuantity(int menuItemId, int newQuantity) {
+        if (newQuantity <= 0) {
+            removeItem(menuItemId);
+            return;
+        }
+        
+        for (OrderItem item : orderItems) {
+            if (item.getMenuItem().getId() == menuItemId) {
+                item.setQuantity(newQuantity);
+                calculateTotal();
+                return;
+            }
+        }
+    }
+    
+    public void clearOrder() {
+        orderItems.clear();
+        calculateTotal();
+    }
+    
+    private void calculateTotal() {
+        subtotal = orderItems.stream()
+                .mapToDouble(item -> item.getMenuItem().calculatePrice() * item.getQuantity())
+                .sum();
+        
+        
+        tax = subtotal * 0.10; //10% VAT
+        
+        totalAmount = subtotal + tax - discount;
+        if (totalAmount < 0) {
+            totalAmount = 0;
+        }
+    }
+    
+    public boolean isEmpty() {
+        return orderItems.isEmpty();
+    }
+    
+    public int getTotalItems() {
+        return orderItems.stream()
+                .mapToInt(OrderItem::getQuantity)
+                .sum();
+    }
+    
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("Đơn hàng #%d (Mã khách hàng: %d)\n", orderId, customerId));
+        sb.append(String.format("Trạng thái: %s | Dịch vụ: %s\n", status, serviceType));
+        sb.append(String.format("Thời gian đặt hàng: %s\n", orderTime));
+        
+        if (serviceType == ServiceType.DINE_IN && tableNumber > 0) {
+            sb.append(String.format("Bàn: %d\n", tableNumber));
+        }
+        
+        sb.append("\nMặt hàng:\n");
+        for (OrderItem item : orderItems) {
+            double line = item.getMenuItem().calculatePrice() * item.getQuantity();
+            long vnd = Math.round(line);
+            sb.append(String.format("- %s x%d = %dđ\n", 
+                    item.getMenuItem().getName(), 
+                    item.getQuantity(), 
+                    vnd));
+        }
+        long subtotalVnd = Math.round(subtotal);
+        long taxVnd = Math.round(tax);
+        long discountVnd = Math.round(discount);
+        long totalVnd = Math.round(totalAmount);
+        sb.append(String.format("\nTạm tính: %dđ\n", subtotalVnd));
+        sb.append(String.format("Thuế (VAT 10%): %dđ\n", taxVnd));
+        if (discount > 0) {
+            sb.append(String.format("Giảm giá: -%dđ\n", discountVnd));
+        }
+        sb.append(String.format("Tổng cộng: %dđ\n", totalVnd));
+        
+        if (!specialInstructions.isEmpty()) {
+            sb.append(String.format("Ghi chú: %s\n", specialInstructions));
+        }
+        
+        return sb.toString();
     }
 }
