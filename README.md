@@ -16,40 +16,15 @@ Hệ thống Quản lý Quán Cafe/Trà Sữa được xây dựng nhằm:
 ## Cấu trúc dự án
 
 ```
-E:\Code\Java\BTN\OOP\
-├── bin\                           
-│   ├── ManagementView.class      # Giao diện quản lý
-│   ├── CustomerView.class         # Giao diện khách hàng
-│   ├── Customer.class             # Class khách hàng
-│   ├── Order.class                # Class đơn hàng
-│   ├── MenuItem.class             # Class món ăn
-│   ├── Coffee.class               # Class cà phê (kế thừa MenuItem)
-│   └── ... (các class khác)
-├── Admin Manager\                 # Source code quản lý
-│   ├── ManagementView.java        # Giao diện chính quản lý
-│   ├── OrderManager.java          # Quản lý đơn hàng
-│   ├── TableManager.java          # Quản lý bàn
-│   ├── MenuManagement.java        # Quản lý thực đơn
-│   ├── CustomerManagement.java    # Quản lý khách hàng
-│   └── Table.java                 # Class bàn
-├── *.java                         # 📄 Source code files
-└── README.md                      # 📄 Tài liệu dự án
+
 ```
 ## Cách chạy chương trình
-### 1. Chạy chương trình quản lý (Admin)
-```bash
-java -cp bin ManagementView
-```
-- **Mật khẩu admin:** `admin123`
-### 2. Chạy chương trình khách hàng
-```bash
-java -cp bin CustomerView
-```
+
 
 ## Yêu cầu chức năng
 ### Giao diện Quản lý (ManagementView)
 **Đăng nhập:**
-- Mật khẩu admin: `admin123`
+
 
 **Menu quản lý:**
 1. **Quản lý đơn hàng** - Xem, cập nhật trạng thái đơn hàng
@@ -58,7 +33,7 @@ java -cp bin CustomerView
 4. **Quản lý khách hàng** - Xem thông tin, thống kê khách hàng
 5. **Trạng thái hệ thống** - Kiểm tra hoạt động hệ thống
 
-### 🛒 Giao diện Khách hàng (CustomerView)
+### Giao diện Khách hàng (CustomerView)
 **Menu khách hàng:**
 1. **Xem thực đơn** - Danh sách món ăn, giá cả
 2. **Đặt hàng** - Chọn món, số lượng, loại dịch vụ (dine-in/takeaway)
