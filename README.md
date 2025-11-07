@@ -1,3 +1,4 @@
+
 # OOP
 Dự án bài tập lớn cho Môn Lập trình hướng đối tượng và Cơ sở dữ liệu
 ## Description: https://docs.google.com/document/d/1cNDeu2sTH9uSQ6RksYpEkOlDopm2nsHsBul-sA5ODKM/edit?usp=sharing
@@ -6,116 +7,135 @@ Dự án bài tập lớn cho Môn Lập trình hướng đối tượng và Cơ
 # Hệ thống Quản lý Quán Cafe/Trà Sữa
 
 ## Giới thiệu
-
 Hệ thống Quản lý Quán Cafe/Trà Sữa được xây dựng nhằm:
-
 * Tự động hóa quy trình **đặt món – thanh toán – quản lý**.
 * Giúp **khách hàng** dễ dàng gọi món, theo dõi hóa đơn và phản hồi dịch vụ.
 * Hỗ trợ **nhân viên/thu ngân** nhập order, xử lý thanh toán, theo dõi tiến độ order.
 * Cho phép **quản lý/chủ quán** quản lý menu, nhân viên, kho nguyên liệu, phân quyền và thống kê doanh thu.
 
-### Yêu cầu chức năng
+## Cấu trúc dự án
 
-1. **Khách hàng**
+```
+E:\Code\Java\BTN\OOP\
+├── bin\                           
+│   ├── ManagementView.class      # Giao diện quản lý
+│   ├── CustomerView.class         # Giao diện khách hàng
+│   ├── Customer.class             # Class khách hàng
+│   ├── Order.class                # Class đơn hàng
+│   ├── MenuItem.class             # Class món ăn
+│   ├── Coffee.class               # Class cà phê (kế thừa MenuItem)
+│   └── ... (các class khác)
+├── Admin Manager\                 # Source code quản lý
+│   ├── ManagementView.java        # Giao diện chính quản lý
+│   ├── OrderManager.java          # Quản lý đơn hàng
+│   ├── TableManager.java          # Quản lý bàn
+│   ├── MenuManagement.java        # Quản lý thực đơn
+│   ├── CustomerManagement.java    # Quản lý khách hàng
+│   └── Table.java                 # Class bàn
+├── *.java                         # 📄 Source code files
+└── README.md                      # 📄 Tài liệu dự án
+```
+## Cách chạy chương trình
+### 1. Chạy chương trình quản lý (Admin)
+```bash
+java -cp bin ManagementView
+```
+- **Mật khẩu admin:** `admin123`
+### 2. Chạy chương trình khách hàng
+```bash
+java -cp bin CustomerView
+```
 
-   * Đăng nhập/đăng ký tài khoản.
-   * Xem menu (tên, giá, mô tả, hình ảnh).
-   * Chọn món, thêm ghi chú khẩu vị, đặt hàng.
-   * Thanh toán bằng tiền mặt hoặc QR.
-   * Đánh giá dịch vụ (tùy chọn).
+## Yêu cầu chức năng
+### Giao diện Quản lý (ManagementView)
+**Đăng nhập:**
+- Mật khẩu admin: `admin123`
 
-2. **Nhân viên/Thu ngân**
+**Menu quản lý:**
+1. **Quản lý đơn hàng** - Xem, cập nhật trạng thái đơn hàng
+2. **Quản lý bàn** - Quản lý trạng thái bàn (trống/có khách/đặt trước)
+3. **Quản lý thực đơn** - Thêm, sửa, xóa món ăn
+4. **Quản lý khách hàng** - Xem thông tin, thống kê khách hàng
+5. **Trạng thái hệ thống** - Kiểm tra hoạt động hệ thống
 
-   * Nhập order của khách và gửi đến pha chế.
-   * Áp dụng khuyến mãi, giảm giá.
-   * Xử lý thanh toán.
-   * Theo dõi trạng thái order (**Mới → Đang làm → Hoàn thành**).
-   * Cập nhật/hủy order theo yêu cầu khách.
+### 🛒 Giao diện Khách hàng (CustomerView)
+**Menu khách hàng:**
+1. **Xem thực đơn** - Danh sách món ăn, giá cả
+2. **Đặt hàng** - Chọn món, số lượng, loại dịch vụ (dine-in/takeaway)
+3. **Xem giỏ hàng** - Kiểm tra đơn hàng hiện tại
+4. **Thanh toán** - Xác nhận và thanh toán đơn hàng
+5. **Đăng ký khách hàng** - Tạo tài khoản mới
+6. **Đăng nhập** - Đăng nhập bằng email và số điện thoại
+7. **Xem lịch sử đơn hàng** - Xem các đơn hàng đã đặt
 
-3. **Quản lý/Admin**
+##  Các Class chính
 
-   * Quản lý menu (thêm, sửa, xóa, phân loại, combo, topping).
-   * Quản lý kho nguyên liệu.
-   * Thống kê doanh thu, ca làm việc.
-   * Quản lý nhân viên (tài khoản, phân quyền).
-   
-## Yêu cầu hệ thống
+### Core Classes
 
-### 1. Khách hàng (Customer)
+#### 1. **Customer** - Khách hàng
+- Thông tin cá nhân (tên, email, số điện thoại)
+- Lịch sử đơn hàng
+- Điểm thưởng (loyalty points)
+- Quản lý đơn hàng
 
-**Thông tin tài khoản**
+#### 2. **Order** - Đơn hàng
+- Thông tin đơn hàng (ID, khách hàng, thời gian)
+- Danh sách món ăn (OrderItem)
+- Trạng thái đơn hàng (PENDING, CONFIRMED, PREPARING, READY, COMPLETED, CANCELLED)
+- Loại dịch vụ (DINE_IN, TAKEAWAY)
+- Tính toán tổng tiền (bao gồm thuế VAT 10%)
 
-* `id` : mã khách hàng (String)
-* `name` : họ và tên (String)
-* `username` : tên đăng nhập (String)
-* `password` : mật khẩu (String, mã hóa)
-* `phone` : số điện thoại (String)
-* `email` : địa chỉ email (String)
-* `gender` : giới tính (String)
-* `dob` : ngày sinh (Date)
-* `address` : địa chỉ giao hàng (String)
-* `created_at` : ngày tạo tài khoản (DateTime)
+#### 3. **MenuItem** - Món ăn (Abstract Class)
+- Thông tin cơ bản (ID, tên, giá, mô tả, loại)
+- Tính giá (có thể override)
+- Trạng thái khả dụng
 
-**Đơn hàng (Order)**
+#### 4. **Coffee** - Cà phê (Kế thừa MenuItem)
+- Kích thước (Small, Medium, Large, Extra Large)
+- Mức rang (Light, Medium, Dark)
+- Tùy chọn (sữa, đường)
+- Tính giá động dựa trên tùy chọn
 
-* `order_id` : mã đơn hàng (String)
-* `customer_id` : mã khách hàng (String)
-* `menu_items` : danh sách món (List<String>)
-* `chosen_item` : món được chọn (String)
-* `price` : đơn giá (Float)
-* `quantity` : số lượng (Int/Long)
-* `note` : ghi chú khẩu vị (String)
-* `method` : phương thức thanh toán (String: cash/QR)
-* `status` : trạng thái (String: Mới, Đang làm, Hoàn thành, Đã hủy)
-* `created_at` : thời gian đặt hàng (DateTime)
+#### 5. **Table** - Bàn
+- Số bàn, sức chứa
+- Trạng thái (AVAILABLE, OCCUPIED, RESERVED, OUT_OF_SERVICE)
+- Quản lý đặt bàn
 
-### 2. Nhân viên / Thu ngân (Staff / Cashier)
+### Management Classes
 
-**Thông tin nhân viên**
+#### 1. **ManagementView** - Giao diện chính quản lý
+- Menu điều hướng chính
+- Xác thực admin
+- Tích hợp các module quản lý
 
-* `id` : mã nhân viên (String)
-* `name` : họ và tên (String)
-* `username` : tên đăng nhập (String)
-* `password` : mật khẩu (String, mã hóa)
-* `role` : vai trò (String: thu ngân, phục vụ, pha chế)
-* `phone` : số điện thoại (String)
-* `shift` : ca làm việc (String: sáng/chiều/tối)
-* `salary` : mức lương (Float)
-* `created_at` : ngày vào làm (DateTime)
+#### 2. **OrderManager** - Quản lý đơn hàng
+- Xem tất cả đơn hàng
+- Xem đơn hàng đang xử lý
+- Cập nhật trạng thái đơn hàng
+- Tự động giải phóng bàn khi hoàn thành
 
-**Chức năng xử lý order**
+#### 3. **TableManager** - Quản lý bàn
+- Xem trạng thái bàn
+- Thêm/xóa bàn
+- Cập nhật trạng thái bàn
+- Thống kê sử dụng bàn
 
-* Nhập order cho khách.
-* Gửi order đến bộ phận pha chế.
-* Tính tiền, áp dụng khuyến mãi/giảm giá.
-* Ghi nhận phương thức thanh toán.
-* Cập nhật order (hủy/sửa).
+#### 4. **MenuManagement** - Quản lý thực đơn
+- Thêm/sửa/xóa món ăn
+- Tìm kiếm món ăn
+- Quản lý loại cà phê và món ăn
 
-### 3. Quản lý / Chủ quán (Admin / Manager)
-
-**Thông tin quản lý**
-
-* `id` : mã quản lý (String)
-* `name` : họ và tên (String)
-* `username` : tên đăng nhập (String)
-* `password` : mật khẩu (String, mã hóa)
-* `phone` : số điện thoại (String)
-* `email` : email (String)
-* `role` : vai trò (Admin/Manager)
-
-**Chức năng quản lý**
-
-* **Quản lý Menu**
-
-  * `menu_id` : mã sản phẩm (String)
-  * `name` : tên món (String)
-  * `description` : mô tả (String)
-  * `price` : giá bán (Float)
-  * `category` : loại sản phẩm (ví dụ: cafe, trà, topping)
-  * `status` : trạng thái (còn bán/ngừng bán)
-  * `image_url` : hình ảnh minh họa (String)
+#### 5. **CustomerManagement** - Quản lý khách hàng
+- Xem danh sách khách hàng
+- Tìm kiếm khách hàng
+- Cập nhật thông tin
+- Thống kê khách hàng
 
 
-
-
+#### **CustomerView** - Giao diện khách hàng
+- Menu tương tác thân thiện
+- Quản lý giỏ hàng
+- Hệ thống đăng ký/đăng nhập
+- Hỗ trợ cả dine-in và takeaway
+- Quản lý bàn cho khách dine-in
 

@@ -1,0 +1,113 @@
+package coffeeshop;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Coffee extends MenuItem {
+    public enum Size {
+        SMALL(1.0), MEDIUM(1.3), LARGE(1.6);
+        private final double multiplier;
+        Size(double multiplier) { this.multiplier = multiplier; }
+        public double getMultiplier() { 
+            return multiplier; 
+        }
+    }
+    
+    public enum CoffeeType {
+        ESPRESSO, AMERICANO, LATTE, CAPPUCCINO, MACCHIATO, MOCHA, FRAPPUCCINO
+    }
+    
+    private CoffeeType coffeeType;
+    private Size size;
+    private List<String> customizations;
+    private boolean isHot;
+    
+    public Coffee(int id, String name, String description, double basePrice, 
+                  CoffeeType coffeeType, Size size, boolean isHot) {
+        super(id, name, description, basePrice, "Coffee");
+        this.coffeeType = coffeeType;
+        this.size = size;
+        this.isHot = isHot;
+        this.customizations = new ArrayList<>();
+    }
+    
+    public Coffee(int id, String name, double basePrice, String category, String description) {
+        super(id, name, description, basePrice, category);
+        this.coffeeType = CoffeeType.AMERICANO;
+        this.size = Size.MEDIUM;
+        this.isHot = true;
+        this.customizations = new ArrayList<>();
+    }
+
+    public CoffeeType getCoffeeType() {
+        return coffeeType;
+    }
+
+    public void setCoffeeType(CoffeeType coffeeType) {
+        this.coffeeType = coffeeType;
+    }
+
+    public Size getSize() {
+        return size;
+    }
+
+    public void setSize(Size size) {
+        this.size = size;
+    }
+
+    public List<String> getCustomizations() {
+        return customizations;
+    }
+
+    public void setCustomizations(List<String> customizations) {
+        this.customizations = customizations;
+    }
+
+    public boolean isIsHot() {
+        return isHot;
+    }
+
+    public void setIsHot(boolean isHot) {
+        this.isHot = isHot;
+    }
+    
+    public void addCustomization(String customization) {
+        if (customization != null && !customization.trim().isEmpty()) {
+            customizations.add(customization.trim());
+        }
+    }
+    
+    public void removeCustomization(String customization) {
+        customizations.remove(customization);
+    }
+    
+    public void clearCustomizations() { 
+        customizations.clear(); 
+    }
+    
+    @Override
+    public String getItemType() { 
+        return "Coffee"; 
+    }
+    
+    @Override
+    public double calculatePrice() {
+        double finalPrice = getPrice() * size.getMultiplier();
+        finalPrice += customizations.size() * 5000.0;
+        return finalPrice;
+    }
+    
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(super.toString());
+        sb.append(String.format("\nType: %s | Size: %s | Temperature: %s", 
+                coffeeType, size, isHot ? "Hot" : "Cold"));
+        if (!customizations.isEmpty()) {
+            sb.append("\nCustomizations: ");
+            sb.append(String.join(", ", customizations));
+        }
+        sb.append(String.format("\nFinal Price: %s", calculatePrice()));
+        return sb.toString();
+    }
+}

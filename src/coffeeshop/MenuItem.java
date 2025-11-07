@@ -1,3 +1,4 @@
+package coffeeshop;
 
 public abstract class MenuItem {
     private int id;
@@ -79,7 +80,7 @@ public abstract class MenuItem {
     @Override
     public String toString() {
         long vnd = Math.round(price);
-        return String.format("%s - %dđ\n%s", name, vnd, description);
+        return String.format("%s - %d\n%s", name, vnd, description);
     }
     
     @Override
