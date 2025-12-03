@@ -1,116 +1,106 @@
+# Ứng dụng Quản lý Quán Cafe - Java Swing
 
-# OOP
-Dự án bài tập lớn cho Môn Lập trình hướng đối tượng và Cơ sở dữ liệu
-## Description: https://docs.google.com/document/d/1cNDeu2sTH9uSQ6RksYpEkOlDopm2nsHsBul-sA5ODKM/edit?usp=sharing
+Ứng dụng Java Swing đơn giản để quản lý quán cafe với 2 loại tài khoản: Khách hàng và Admin.
+Link báo cáo: https://drive.google.com/file/d/1M4AsFWIqUaCvnBN4EKqlRGJQUsZevsC5/view?usp=sharing
 
+## Mô tả
 
-# Hệ thống Quản lý Quán Cafe/Trà Sữa
-
-## Giới thiệu
-Hệ thống Quản lý Quán Cafe/Trà Sữa được xây dựng nhằm:
-* Tự động hóa quy trình **đặt món – thanh toán – quản lý**.
-* Giúp **khách hàng** dễ dàng gọi món, theo dõi hóa đơn và phản hồi dịch vụ.
-* Hỗ trợ **nhân viên/thu ngân** nhập order, xử lý thanh toán, theo dõi tiến độ order.
-* Cho phép **quản lý/chủ quán** quản lý menu, nhân viên, kho nguyên liệu, phân quyền và thống kê doanh thu.
+Ứng dụng cho phép:
+- **Khách hàng**: Đăng ký, đăng nhập, xem menu, thêm món vào giỏ hàng, đặt hàng, xem lịch sử đơn hàng
+- **Admin**: Quản lý menu (thêm/sửa/xóa món), xem tất cả đơn hàng, xem thống kê doanh thu
 
 ## Cấu trúc dự án
 
 ```
-
+src/coffeeshop/
+├── Main.java                 # Điểm khởi đầu ứng dụng
+├── LoginScreen.java          # Màn hình đăng nhập
+├── RegisterScreen.java       # Màn hình đăng ký
+├── CustomerMenuScreen.java   # Màn hình menu khách hàng
+├── AdminMenuScreen.java      # Màn hình quản lý admin
+├── FileDatabase.java         # Xử lý đọc/ghi file
+├── User.java                 # Class quản lý người dùng
+├── MenuItemSimple.java       # Class quản lý món ăn
+├── OrderSimple.java          # Class quản lý đơn hàng
+└── OrderItemSimple.java      # Class quản lý chi tiết đơn hàng
 ```
+
 ## Cách chạy chương trình
 
+### Yêu cầu
+- Java JDK 8 trở lên
+- Không cần thư viện ngoài, chỉ dùng core Java
 
-## Yêu cầu chức năng
-### Giao diện Quản lý (ManagementView)
-**Đăng nhập:**
+### Cách chạy
 
+**Cách 1: Sử dụng javac và java**
+```bash
+# Biên dịch
+javac -d build/classes src/coffeeshop/*.java
 
-**Menu quản lý:**
-1. **Quản lý đơn hàng** - Xem, cập nhật trạng thái đơn hàng
-2. **Quản lý bàn** - Quản lý trạng thái bàn (trống/có khách/đặt trước)
-3. **Quản lý thực đơn** - Thêm, sửa, xóa món ăn
-4. **Quản lý khách hàng** - Xem thông tin, thống kê khách hàng
-5. **Trạng thái hệ thống** - Kiểm tra hoạt động hệ thống
+# Chạy ứng dụng
+java -cp build/classes coffeeshop.Main
+```
 
-### Giao diện Khách hàng (CustomerView)
-**Menu khách hàng:**
-1. **Xem thực đơn** - Danh sách món ăn, giá cả
-2. **Đặt hàng** - Chọn món, số lượng, loại dịch vụ (dine-in/takeaway)
-3. **Xem giỏ hàng** - Kiểm tra đơn hàng hiện tại
-4. **Thanh toán** - Xác nhận và thanh toán đơn hàng
-5. **Đăng ký khách hàng** - Tạo tài khoản mới
-6. **Đăng nhập** - Đăng nhập bằng email và số điện thoại
-7. **Xem lịch sử đơn hàng** - Xem các đơn hàng đã đặt
+**Cách 2: Sử dụng IDE (NetBeans, IntelliJ, Eclipse)**
+1. Mở dự án trong IDE
+2. Chạy file `Main.java`
 
-##  Các Class chính
+## Dữ liệu lưu trữ
 
-### Core Classes
+Ứng dụng lưu dữ liệu vào các file text (CSV format) trong thư mục gốc:
 
-#### 1. **Customer** - Khách hàng
-- Thông tin cá nhân (tên, email, số điện thoại)
-- Lịch sử đơn hàng
-- Điểm thưởng (loyalty points)
-- Quản lý đơn hàng
+- **users.txt**: Danh sách người dùng (username,password,role)
+- **menu.txt**: Danh sách món ăn (id,name,price)
+- **orders.txt**: Danh sách đơn hàng
 
-#### 2. **Order** - Đơn hàng
-- Thông tin đơn hàng (ID, khách hàng, thời gian)
-- Danh sách món ăn (OrderItem)
-- Trạng thái đơn hàng (PENDING, CONFIRMED, PREPARING, READY, COMPLETED, CANCELLED)
-- Loại dịch vụ (DINE_IN, TAKEAWAY)
-- Tính toán tổng tiền (bao gồm thuế VAT 10%)
+Các file này sẽ tự động được tạo khi chạy lần đầu.
 
-#### 3. **MenuItem** - Món ăn (Abstract Class)
-- Thông tin cơ bản (ID, tên, giá, mô tả, loại)
-- Tính giá (có thể override)
-- Trạng thái khả dụng
+## Tài khoản mặc định
 
-#### 4. **Coffee** - Cà phê (Kế thừa MenuItem)
-- Kích thước (Small, Medium, Large, Extra Large)
-- Mức rang (Light, Medium, Dark)
-- Tùy chọn (sữa, đường)
-- Tính giá động dựa trên tùy chọn
+Khi chạy lần đầu, hệ thống tự động tạo tài khoản admin:
+- **Username**: `admin`
+- **Password**: `admin123`
+- **Role**: `ADMIN`
 
-#### 5. **Table** - Bàn
-- Số bàn, sức chứa
-- Trạng thái (AVAILABLE, OCCUPIED, RESERVED, OUT_OF_SERVICE)
-- Quản lý đặt bàn
+## Chức năng
 
-### Management Classes
+### Khách hàng
 
-#### 1. **ManagementView** - Giao diện chính quản lý
-- Menu điều hướng chính
-- Xác thực admin
-- Tích hợp các module quản lý
+1. **Đăng ký**: Tạo tài khoản mới (role: CUSTOMER)
+2. **Đăng nhập**: Đăng nhập bằng username và password
+3. **Xem menu**: Xem danh sách tất cả món ăn với giá
+4. **Giỏ hàng**: 
+   - Thêm món vào giỏ hàng
+   - Xóa món khỏi giỏ hàng
+   - Xem tổng tiền
+5. **Đặt hàng**: Xác nhận và lưu đơn hàng
+6. **Lịch sử đơn hàng**: Xem tất cả đơn hàng đã đặt
 
-#### 2. **OrderManager** - Quản lý đơn hàng
-- Xem tất cả đơn hàng
-- Xem đơn hàng đang xử lý
-- Cập nhật trạng thái đơn hàng
-- Tự động giải phóng bàn khi hoàn thành
+### Admin
 
-#### 3. **TableManager** - Quản lý bàn
-- Xem trạng thái bàn
-- Thêm/xóa bàn
-- Cập nhật trạng thái bàn
-- Thống kê sử dụng bàn
+1. **Quản lý Menu**:
+   - Thêm món mới
+   - Sửa thông tin món (tên, giá)
+   - Xóa món
+   - Làm mới danh sách
 
-#### 4. **MenuManagement** - Quản lý thực đơn
-- Thêm/sửa/xóa món ăn
-- Tìm kiếm món ăn
-- Quản lý loại cà phê và món ăn
+2. **Quản lý Đơn hàng**:
+   - Xem tất cả đơn hàng
+   - Xem chi tiết từng đơn hàng
+   - Làm mới danh sách
 
-#### 5. **CustomerManagement** - Quản lý khách hàng
-- Xem danh sách khách hàng
-- Tìm kiếm khách hàng
-- Cập nhật thông tin
-- Thống kê khách hàng
+3. **Thống kê**:
+   - Tổng số đơn hàng
+   - Tổng doanh thu
 
+## Công nghệ sử dụng
+- **Java Swing**: Giao diện người dùng
+- **Java I/O**: Đọc/ghi file text
+- **Core Java**: Không sử dụng thư viện ngoài
 
-#### **CustomerView** - Giao diện khách hàng
-- Menu tương tác thân thiện
-- Quản lý giỏ hàng
-- Hệ thống đăng ký/đăng nhập
-- Hỗ trợ cả dine-in và takeaway
-- Quản lý bàn cho khách dine-in
+## Lưu ý
 
+- Mật khẩu được lưu dạng text (không mã hóa) để đơn giản
+- Dữ liệu lưu dạng CSV trong file text
+- Ứng dụng đơn giản, phù hợp cho mục đích học tập
