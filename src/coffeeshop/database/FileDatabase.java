@@ -18,7 +18,6 @@ public class FileDatabase {
         File file = new File(USERS_FILE);
         
         if (!file.exists()) {
-            
             User admin = new User("admin", "admin123", "ADMIN");
             users.add(admin);
             saveUsers(users);
@@ -74,14 +73,11 @@ public class FileDatabase {
         File file = new File(MENU_FILE);
         
         if (!file.exists()) {
-            
             menu.add(new MenuItem(1, "Cà phê đen", 15000));
             menu.add(new MenuItem(2, "Cà phê sữa", 20000));
             menu.add(new MenuItem(3, "Cappuccino", 45000));
             menu.add(new MenuItem(4, "Latte", 50000));
             menu.add(new MenuItem(5, "Trà đá", 10000));
-            ensureExpandedMenuSeed(menu);
-            pruneDeprecatedItems(menu);
             saveMenu(menu);
             return menu;
         }
@@ -100,55 +96,8 @@ public class FileDatabase {
         } catch (IOException e) {
             System.err.println("Error loading menu: " + e.getMessage());
         }
-        ensureExpandedMenuSeed(menu);
-        pruneDeprecatedItems(menu);
         saveMenu(menu);
         return menu;
-    }
-
-    private static void ensureExpandedMenuSeed(List<MenuItem> menu) {
-        boolean hasCroissant = false;
-        for (MenuItem i : menu) {
-            if ("Croissant bơ".equalsIgnoreCase(i.getName())) {
-                hasCroissant = true;
-                break;
-            }
-        }
-        if (hasCroissant) return;
-
-        int id = 0;
-        for (MenuItem i : menu) {
-            if (i.getId() > id) id = i.getId();
-        }
-        id++;
-
-        String[][] items = new String[][]{
-            {"Americano", "35000"},
-            {"Mocha", "55000"},
-            {"Espresso", "30000"},
-            {"Matcha Latte", "52000"},
-            {"Trà sữa trân châu", "40000"},
-            {"Nước cam ép", "35000"},
-            {"Sinh tố bơ", "45000"},
-            {"Soda chanh", "28000"},
-            {"Croissant bơ", "25000"},
-            {"Bánh tiramisu", "45000"},
-            {"Bánh phô mai", "50000"},
-            {"Brownie chocolate", "38000"},
-            {"Bánh cookies", "15000"},
-            {"Bánh mousse dâu", "48000"}
-        };
-
-        for (String[] it : items) {
-            menu.add(new MenuItem(id++, it[0], Double.parseDouble(it[1])));
-        }
-    }
-
-    private static void pruneDeprecatedItems(List<MenuItem> menu) {
-        menu.removeIf(i -> {
-            String n = i.getName();
-            return "Cà phê đen".equalsIgnoreCase(n) || "Cà phê sữa".equalsIgnoreCase(n);
-        });
     }
     
     public static void saveMenu(List<MenuItem> menu) {
