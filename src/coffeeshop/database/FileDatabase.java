@@ -13,8 +13,6 @@ public class FileDatabase {
     private static final String MENU_FILE = "menu.txt";
     private static final String ORDERS_FILE = "orders.txt";
     
-    
-    
     public static List<User> loadUsers() {
         List<User> users = new ArrayList<>();
         File file = new File(USERS_FILE);
@@ -70,8 +68,6 @@ public class FileDatabase {
         }
         return null;
     }
-    
-    
     
     public static List<MenuItem> loadMenu() {
         List<MenuItem> menu = new ArrayList<>();
@@ -208,8 +204,6 @@ public class FileDatabase {
         }
         return maxId + 1;
     }
-    
-    
     
     public static List<Order> loadOrders() {
         List<Order> orders = new ArrayList<>();

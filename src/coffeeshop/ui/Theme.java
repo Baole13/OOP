@@ -1,12 +1,11 @@
 package coffeeshop.ui;
 
+import coffeeshop.util.FormatUtil;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
-
-import coffeeshop.util.FormatUtil;
 
 public class Theme {
     public static final Color brownDark = new Color(68, 44, 30);

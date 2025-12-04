@@ -1,5 +1,8 @@
 package coffeeshop.ui;
-import coffeeshop.database.FileDatabase;
+import coffeeshop.database.FileMenuRepository;
+import coffeeshop.database.FileOrderRepository;
+import coffeeshop.database.MenuRepository;
+import coffeeshop.database.OrderRepository;
 import coffeeshop.model.MenuItem;
 import coffeeshop.model.Order;
 import coffeeshop.model.OrderItem;
@@ -13,6 +16,8 @@ import javax.swing.table.DefaultTableModel;
 
 public class CustomerMenuScreen extends JFrame {
     private String username;
+    private final MenuRepository menuRepository;
+    private final OrderRepository orderRepository;
     private JTable menuTable;
     private JTable cartTable;
     private DefaultTableModel menuModel;
@@ -21,7 +26,13 @@ public class CustomerMenuScreen extends JFrame {
     private JLabel totalLabel;
     
     public CustomerMenuScreen(String username) {
+        this(username, new FileMenuRepository(), new FileOrderRepository());
+    }
+
+    public CustomerMenuScreen(String username, MenuRepository menuRepository, OrderRepository orderRepository) {
         this.username = username;
+        this.menuRepository = menuRepository;
+        this.orderRepository = orderRepository;
         this.cart = new ArrayList<>();
         
         setTitle("Menu - Khách hàng: " + username);
@@ -138,10 +149,10 @@ public class CustomerMenuScreen extends JFrame {
                 "Xác nhận", JOptionPane.YES_NO_OPTION);
             
             if (confirm == JOptionPane.YES_OPTION) {
-                Order order = new Order(FileDatabase.getNextOrderId(), username);
+                Order order = new Order(orderRepository.getNextOrderId(), username);
                 cart.forEach(order::addItem);
                 
-                FileDatabase.addOrder(order);
+                orderRepository.addOrder(order);
                 cart.clear();
                 updateCartTable();
                 
@@ -191,7 +202,7 @@ public class CustomerMenuScreen extends JFrame {
     
     private void loadMenu() {
         menuModel.setRowCount(0);
-        List<MenuItem> menu = FileDatabase.loadMenu();
+        List<MenuItem> menu = menuRepository.loadMenu();
         for (MenuItem item : menu) {
             menuModel.addRow(new Object[]{
                 item.getId(),
@@ -220,7 +231,7 @@ public class CustomerMenuScreen extends JFrame {
     }
     
     private void showOrderHistory() {
-        java.util.List<Order> orders = FileDatabase.getOrdersByUsername(username);
+        java.util.List<Order> orders = orderRepository.getOrdersByUsername(username);
         
         if (orders.isEmpty()) {
             JOptionPane.showMessageDialog(this, 
