@@ -5,14 +5,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderSimple {
+public class Order {
     private int orderId;
     private String username;
     private LocalDateTime orderTime;
-    private List<OrderItemSimple> items;
+    private List<OrderItem> items;
     private double totalAmount;
     
-    public OrderSimple(int orderId, String username) {
+    public Order(int orderId, String username) {
         this.orderId = orderId;
         this.username = username;
         this.orderTime = LocalDateTime.now();
@@ -32,7 +32,7 @@ public class OrderSimple {
         return orderTime;
     }
     
-    public List<OrderItemSimple> getItems() {
+    public List<OrderItem> getItems() {
         return items;
     }
     
@@ -40,14 +40,14 @@ public class OrderSimple {
         return totalAmount;
     }
     
-    public void addItem(OrderItemSimple item) {
+    public void addItem(OrderItem item) {
         items.add(item);
         recalculateTotal();
     }
     
     private void recalculateTotal() {
         totalAmount = 0.0;
-        for (OrderItemSimple item : items) {
+        for (OrderItem item : items) {
             totalAmount += item.getSubtotal();
         }
     }
@@ -63,7 +63,7 @@ public class OrderSimple {
         
         
         List<String> itemStrings = new ArrayList<>();
-        for (OrderItemSimple item : items) {
+        for (OrderItem item : items) {
             itemStrings.add(item.getItemName() + "x" + item.getQuantity() + "@" + item.getPrice());
         }
         sb.append(String.join(";", itemStrings));
@@ -72,7 +72,7 @@ public class OrderSimple {
     }
     
     
-    public static OrderSimple fromCSV(String csvLine) {
+    public static Order fromCSV(String csvLine) {
         String[] parts = csvLine.split(",", 5);
         if (parts.length >= 4) {
             try {
@@ -82,7 +82,7 @@ public class OrderSimple {
                 LocalDateTime orderTime = LocalDateTime.parse(parts[2], formatter);
                 double totalAmount = Double.parseDouble(parts[3]);
                 
-                OrderSimple order = new OrderSimple(orderId, username);
+                Order order = new Order(orderId, username);
                 order.totalAmount = totalAmount;
                 order.orderTime = orderTime;
                 
@@ -97,7 +97,7 @@ public class OrderSimple {
                                 String itemName = nameQty[0];
                                 int quantity = Integer.parseInt(nameQty[1]);
                                 double price = Double.parseDouble(itemParts[1]);
-                                order.addItem(new OrderItemSimple(itemName, quantity, price));
+                                order.addItem(new OrderItem(itemName, quantity, price));
                             }
                         }
                     }

@@ -1,13 +1,12 @@
 package coffeeshop.database;
 
+import coffeeshop.model.MenuItem;
+import coffeeshop.model.Order;
+import coffeeshop.model.User;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-
-import coffeeshop.model.MenuItemSimple;
-import coffeeshop.model.OrderSimple;
-import coffeeshop.model.User;
 
 public class FileDatabase {
     private static final String USERS_FILE = "users.txt";
@@ -74,17 +73,17 @@ public class FileDatabase {
     
     
     
-    public static List<MenuItemSimple> loadMenu() {
-        List<MenuItemSimple> menu = new ArrayList<>();
+    public static List<MenuItem> loadMenu() {
+        List<MenuItem> menu = new ArrayList<>();
         File file = new File(MENU_FILE);
         
         if (!file.exists()) {
             
-            menu.add(new MenuItemSimple(1, "Cà phê đen", 15000));
-            menu.add(new MenuItemSimple(2, "Cà phê sữa", 20000));
-            menu.add(new MenuItemSimple(3, "Cappuccino", 45000));
-            menu.add(new MenuItemSimple(4, "Latte", 50000));
-            menu.add(new MenuItemSimple(5, "Trà đá", 10000));
+            menu.add(new MenuItem(1, "Cà phê đen", 15000));
+            menu.add(new MenuItem(2, "Cà phê sữa", 20000));
+            menu.add(new MenuItem(3, "Cappuccino", 45000));
+            menu.add(new MenuItem(4, "Latte", 50000));
+            menu.add(new MenuItem(5, "Trà đá", 10000));
             ensureExpandedMenuSeed(menu);
             pruneDeprecatedItems(menu);
             saveMenu(menu);
@@ -96,7 +95,7 @@ public class FileDatabase {
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
                 if (!line.isEmpty()) {
-                    MenuItemSimple item = MenuItemSimple.fromCSV(line);
+                    MenuItem item = MenuItem.fromCSV(line);
                     if (item != null) {
                         menu.add(item);
                     }
@@ -111,9 +110,9 @@ public class FileDatabase {
         return menu;
     }
 
-    private static void ensureExpandedMenuSeed(List<MenuItemSimple> menu) {
+    private static void ensureExpandedMenuSeed(List<MenuItem> menu) {
         boolean hasCroissant = false;
-        for (MenuItemSimple i : menu) {
+        for (MenuItem i : menu) {
             if ("Croissant bơ".equalsIgnoreCase(i.getName())) {
                 hasCroissant = true;
                 break;
@@ -122,7 +121,7 @@ public class FileDatabase {
         if (hasCroissant) return;
 
         int id = 0;
-        for (MenuItemSimple i : menu) {
+        for (MenuItem i : menu) {
             if (i.getId() > id) id = i.getId();
         }
         id++;
@@ -145,20 +144,20 @@ public class FileDatabase {
         };
 
         for (String[] it : items) {
-            menu.add(new MenuItemSimple(id++, it[0], Double.parseDouble(it[1])));
+            menu.add(new MenuItem(id++, it[0], Double.parseDouble(it[1])));
         }
     }
 
-    private static void pruneDeprecatedItems(List<MenuItemSimple> menu) {
+    private static void pruneDeprecatedItems(List<MenuItem> menu) {
         menu.removeIf(i -> {
             String n = i.getName();
             return "Cà phê đen".equalsIgnoreCase(n) || "Cà phê sữa".equalsIgnoreCase(n);
         });
     }
     
-    public static void saveMenu(List<MenuItemSimple> menu) {
+    public static void saveMenu(List<MenuItem> menu) {
         try (PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(MENU_FILE), StandardCharsets.UTF_8))) {
-            for (MenuItemSimple item : menu) {
+            for (MenuItem item : menu) {
                 writer.println(item.toCSV());
             }
         } catch (IOException e) {
@@ -166,20 +165,20 @@ public class FileDatabase {
         }
     }
     
-    public static void addMenuItem(MenuItemSimple item) {
-        List<MenuItemSimple> menu = loadMenu();
+    public static void addMenuItem(MenuItem item) {
+        List<MenuItem> menu = loadMenu();
         menu.add(item);
         saveMenu(menu);
     }
     
     public static void deleteMenuItem(int id) {
-        List<MenuItemSimple> menu = loadMenu();
+        List<MenuItem> menu = loadMenu();
         menu.removeIf(item -> item.getId() == id);
         saveMenu(menu);
     }
     
-    public static void updateMenuItem(MenuItemSimple updatedItem) {
-        List<MenuItemSimple> menu = loadMenu();
+    public static void updateMenuItem(MenuItem updatedItem) {
+        List<MenuItem> menu = loadMenu();
         for (int i = 0; i < menu.size(); i++) {
             if (menu.get(i).getId() == updatedItem.getId()) {
                 menu.set(i, updatedItem);
@@ -189,9 +188,9 @@ public class FileDatabase {
         saveMenu(menu);
     }
     
-    public static MenuItemSimple findMenuItem(int id) {
-        List<MenuItemSimple> menu = loadMenu();
-        for (MenuItemSimple item : menu) {
+    public static MenuItem findMenuItem(int id) {
+        List<MenuItem> menu = loadMenu();
+        for (MenuItem item : menu) {
             if (item.getId() == id) {
                 return item;
             }
@@ -200,9 +199,9 @@ public class FileDatabase {
     }
     
     public static int getNextMenuItemId() {
-        List<MenuItemSimple> menu = loadMenu();
+        List<MenuItem> menu = loadMenu();
         int maxId = 0;
-        for (MenuItemSimple item : menu) {
+        for (MenuItem item : menu) {
             if (item.getId() > maxId) {
                 maxId = item.getId();
             }
@@ -212,8 +211,8 @@ public class FileDatabase {
     
     
     
-    public static List<OrderSimple> loadOrders() {
-        List<OrderSimple> orders = new ArrayList<>();
+    public static List<Order> loadOrders() {
+        List<Order> orders = new ArrayList<>();
         File file = new File(ORDERS_FILE);
         
         if (!file.exists()) {
@@ -225,7 +224,7 @@ public class FileDatabase {
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
                 if (!line.isEmpty()) {
-                    OrderSimple order = OrderSimple.fromCSV(line);
+                    Order order = Order.fromCSV(line);
                     if (order != null) {
                         orders.add(order);
                     }
@@ -238,9 +237,9 @@ public class FileDatabase {
         return orders;
     }
     
-    public static void saveOrders(List<OrderSimple> orders) {
+    public static void saveOrders(List<Order> orders) {
         try (PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(ORDERS_FILE), StandardCharsets.UTF_8))) {
-            for (OrderSimple order : orders) {
+            for (Order order : orders) {
                 writer.println(order.toCSV());
             }
         } catch (IOException e) {
@@ -248,16 +247,16 @@ public class FileDatabase {
         }
     }
     
-    public static void addOrder(OrderSimple order) {
-        List<OrderSimple> orders = loadOrders();
+    public static void addOrder(Order order) {
+        List<Order> orders = loadOrders();
         orders.add(order);
         saveOrders(orders);
     }
     
-    public static List<OrderSimple> getOrdersByUsername(String username) {
-        List<OrderSimple> allOrders = loadOrders();
-        List<OrderSimple> userOrders = new ArrayList<>();
-        for (OrderSimple order : allOrders) {
+    public static List<Order> getOrdersByUsername(String username) {
+        List<Order> allOrders = loadOrders();
+        List<Order> userOrders = new ArrayList<>();
+        for (Order order : allOrders) {
             if (order.getUsername().equals(username)) {
                 userOrders.add(order);
             }
@@ -266,9 +265,9 @@ public class FileDatabase {
     }
     
     public static int getNextOrderId() {
-        List<OrderSimple> orders = loadOrders();
+        List<Order> orders = loadOrders();
         int maxId = 0;
-        for (OrderSimple order : orders) {
+        for (Order order : orders) {
             if (order.getOrderId() > maxId) {
                 maxId = order.getOrderId();
             }

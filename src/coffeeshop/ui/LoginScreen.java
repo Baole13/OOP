@@ -1,10 +1,9 @@
 package coffeeshop.ui;
 
-import java.awt.*;
-import javax.swing.*;
-
 import coffeeshop.database.FileDatabase;
 import coffeeshop.model.User;
+import java.awt.*;
+import javax.swing.*;
 
  public class LoginScreen extends JFrame {
     private JTextField usernameField;
@@ -19,7 +18,7 @@ import coffeeshop.model.User;
         JPanel root = Theme.gradientPanel(new BorderLayout());
         JLabel heading = new JLabel("COFFEE SHOP MANAGEMENT SYSTEM", SwingConstants.CENTER);
         Theme.styleTitle(heading);
-        JLabel sub = new JLabel("Chọn chế độ hoạt động", SwingConstants.CENTER);
+        JLabel sub = new JLabel("Xin chào quý khách!", SwingConstants.CENTER);
         Theme.styleSubtitle(sub);
         JPanel header = new JPanel(new GridLayout(2, 1));
         header.setOpaque(false);
@@ -38,7 +37,7 @@ import coffeeshop.model.User;
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.WEST;
+        gbc.anchor = GridBagConstraints.CENTER;
         card.add(sectionTitle, gbc);
 
         gbc.gridwidth = 1;
@@ -68,7 +67,7 @@ import coffeeshop.model.User;
 
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.setOpaque(false);
-        JButton toRegisterButton = new JButton("Chuyển sang Đăng ký");
+        JButton toRegisterButton = new JButton("  Đăng ký  ");
         JButton loginButton = new JButton("Đăng nhập");
         Theme.stylePrimaryButton(toRegisterButton);
         Theme.styleSecondaryButton(loginButton);
@@ -90,12 +89,7 @@ import coffeeshop.model.User;
         center.add(card, cgbc);
         root.add(center, BorderLayout.CENTER);
 
-        JLabel footer = new JLabel("© 2025 Coffee Shop Management System - Nhóm 8 OOP", SwingConstants.CENTER);
-        footer.setForeground(new Color(235, 225, 210));
-        root.add(footer, BorderLayout.SOUTH);
-
         setContentPane(root);
-        
         
         loginButton.addActionListener(e -> {
             String username = usernameField.getText().trim();

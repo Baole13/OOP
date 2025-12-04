@@ -1,10 +1,9 @@
 package coffeeshop.ui;
 
-import java.awt.*;
-import javax.swing.*;
-
 import coffeeshop.database.FileDatabase;
 import coffeeshop.model.User;
+import java.awt.*;
+import javax.swing.*;
 
 public class RegisterScreen extends JFrame {
     private JTextField usernameField;
@@ -23,7 +22,6 @@ public class RegisterScreen extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         
-        
         JLabel titleLabel = new JLabel("Đăng ký tài khoản");
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
         gbc.gridx = 0;
@@ -31,7 +29,6 @@ public class RegisterScreen extends JFrame {
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         panel.add(titleLabel, gbc);
-        
         
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.EAST;
@@ -44,7 +41,6 @@ public class RegisterScreen extends JFrame {
         gbc.anchor = GridBagConstraints.WEST;
         panel.add(usernameField, gbc);
         
-        
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.EAST;
@@ -54,7 +50,6 @@ public class RegisterScreen extends JFrame {
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
         panel.add(passwordField, gbc);
-        
         
         gbc.gridx = 0;
         gbc.gridy = 3;
@@ -82,7 +77,6 @@ public class RegisterScreen extends JFrame {
         
         root.add(panel, BorderLayout.CENTER);
         setContentPane(root);
-        
         
         registerButton.addActionListener(e -> {
             String username = usernameField.getText().trim();

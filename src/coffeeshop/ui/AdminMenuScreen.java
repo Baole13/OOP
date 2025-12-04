@@ -1,15 +1,15 @@
 package coffeeshop.ui;
 
+import coffeeshop.database.FileDatabase;
+import coffeeshop.model.MenuItem;
+import coffeeshop.model.Order;
+import coffeeshop.model.OrderItem;
+import coffeeshop.util.FormatUtil;
 import java.awt.*;
 import java.util.List;
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-
-import coffeeshop.util.FormatUtil;
-import coffeeshop.database.FileDatabase;
-import coffeeshop.model.MenuItemSimple;
-import coffeeshop.model.OrderItemSimple;
-import coffeeshop.model.OrderSimple;
 
 public class AdminMenuScreen extends JFrame {
     private JTable menuTable;
@@ -27,17 +27,11 @@ public class AdminMenuScreen extends JFrame {
         JPanel root = Theme.gradientPanel(new BorderLayout());
         JTabbedPane tabbedPane = new JTabbedPane();
         
-        
         tabbedPane.addTab("Quản lý Menu", createMenuPanel());
-        
-        
         tabbedPane.addTab("Quản lý Đơn hàng", createOrdersPanel());
-        
-        
         tabbedPane.addTab("Thống kê", createStatsPanel());
         
         root.add(tabbedPane, BorderLayout.CENTER);
-        
         
         JPanel bottomPanel = new JPanel(new FlowLayout());
         bottomPanel.setOpaque(false);
@@ -58,7 +52,6 @@ public class AdminMenuScreen extends JFrame {
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         Theme.styleCard(panel);
         
-        
         String[] columns = {"ID", "Tên món", "Giá"};
         menuModel = new DefaultTableModel(columns, 0) {
             @Override
@@ -69,11 +62,12 @@ public class AdminMenuScreen extends JFrame {
         menuTable = new JTable(menuModel);
         Theme.styleTable(menuTable);
         menuTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        menuTable.getColumnModel().getColumn(2)
+                 .setCellRenderer(new CurrencyCellRenderer());
         loadMenu();
         
         JScrollPane scrollPane = new JScrollPane(menuTable);
         panel.add(scrollPane, BorderLayout.CENTER);
-        
         
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.setOpaque(false);
@@ -140,7 +134,6 @@ public class AdminMenuScreen extends JFrame {
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         Theme.styleCard(panel);
         
-        
         String[] columns = {"Mã đơn", "Khách hàng", "Thời gian", "Tổng tiền"};
         ordersModel = new DefaultTableModel(columns, 0) {
             @Override
@@ -164,7 +157,6 @@ public class AdminMenuScreen extends JFrame {
         
         JScrollPane scrollPane = new JScrollPane(ordersTable);
         panel.add(scrollPane, BorderLayout.CENTER);
-        
         
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.setOpaque(false);
@@ -203,20 +195,20 @@ public class AdminMenuScreen extends JFrame {
     
     private void loadMenu() {
         menuModel.setRowCount(0);
-        List<MenuItemSimple> menu = FileDatabase.loadMenu();
-        for (MenuItemSimple item : menu) {
+        List<MenuItem> menu = FileDatabase.loadMenu();
+        for (MenuItem item : menu) {
             menuModel.addRow(new Object[]{
                 item.getId(),
                 item.getName(),
-                FormatUtil.formatCurrency(item.getPrice())
+                item.getPrice()
             });
         }
     }
     
     private void loadOrders() {
         ordersModel.setRowCount(0);
-        List<OrderSimple> orders = FileDatabase.loadOrders();
-        for (OrderSimple order : orders) {
+        List<Order> orders = FileDatabase.loadOrders();
+        for (Order order : orders) {
             ordersModel.addRow(new Object[]{
                 order.getOrderId(),
                 order.getUsername(),
@@ -268,7 +260,7 @@ public class AdminMenuScreen extends JFrame {
                     throw new NumberFormatException();
                 }
                 
-                FileDatabase.addMenuItem(new MenuItemSimple(
+                FileDatabase.addMenuItem(new MenuItem(
                     FileDatabase.getNextMenuItemId(), name, price));
                 
                 loadMenu();
@@ -294,8 +286,15 @@ public class AdminMenuScreen extends JFrame {
     
     private void showEditMenuItemDialog(int row) {
         int id = (Integer) menuModel.getValueAt(row, 0);
-        String name = (String) menuModel.getValueAt(row, 1);
-        double price = (Double) menuModel.getValueAt(row, 2);
+        MenuItem item = FileDatabase.findMenuItem(id);
+        if (item == null) {
+            JOptionPane.showMessageDialog(this, 
+                "Không tìm thấy món ăn!", 
+                "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String name = item.getName();
+        double price = item.getPrice();
         
         JDialog dialog = new JDialog(this, "Sửa món", true);
         dialog.setSize(400, 200);
@@ -306,7 +305,8 @@ public class AdminMenuScreen extends JFrame {
         gbc.insets = new Insets(5, 5, 5, 5);
         
         JTextField nameField = new JTextField(name, 20);
-        JTextField priceField = new JTextField(String.valueOf(price), 20);
+        String initialPriceStr = price == (long) price ? String.valueOf((long) price) : String.valueOf(price);
+        JTextField priceField = new JTextField(initialPriceStr, 20);
         
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -338,7 +338,7 @@ public class AdminMenuScreen extends JFrame {
                     throw new NumberFormatException();
                 }
                 
-                FileDatabase.updateMenuItem(new MenuItemSimple(id, newName, newPrice));
+                FileDatabase.updateMenuItem(new MenuItem(id, newName, newPrice));
                 
                 loadMenu();
                 dialog.dispose();
@@ -363,10 +363,10 @@ public class AdminMenuScreen extends JFrame {
     
     private void showOrderDetails(int row) {
         int orderId = (Integer) ordersModel.getValueAt(row, 0);
-        List<OrderSimple> orders = FileDatabase.loadOrders();
+        List<Order> orders = FileDatabase.loadOrders();
         
-        OrderSimple order = null;
-        for (OrderSimple o : orders) {
+        Order order = null;
+        for (Order o : orders) {
             if (o.getOrderId() == orderId) {
                 order = o;
                 break;
@@ -381,7 +381,7 @@ public class AdminMenuScreen extends JFrame {
         details.append("Thời gian: ").append(order.getOrderTime()).append("\n\n");
         details.append("Chi tiết đơn hàng:\n");
         
-        for (OrderItemSimple item : order.getItems()) {
+        for (OrderItem item : order.getItems()) {
             details.append("- ").append(item.getItemName())
                    .append(" x ").append(item.getQuantity())
                    .append(" = ").append(FormatUtil.formatCurrency(item.getSubtotal()))
@@ -395,11 +395,11 @@ public class AdminMenuScreen extends JFrame {
     }
     
     private void updateStats() {
-        List<OrderSimple> orders = FileDatabase.loadOrders();
+        List<Order> orders = FileDatabase.loadOrders();
         int totalOrders = orders.size();
         double totalRevenue = 0.0;
         
-        for (OrderSimple order : orders) {
+        for (Order order : orders) {
             totalRevenue += order.getTotalAmount();
         }
         
@@ -410,6 +410,17 @@ public class AdminMenuScreen extends JFrame {
                       "</center></html>";
         
         statsLabel.setText(stats);
+    }
+    private static class CurrencyCellRenderer extends DefaultTableCellRenderer {
+        @Override
+        protected void setValue(Object value) {
+            if (value instanceof Number) {
+                double amount = ((Number) value).doubleValue();
+                setText(FormatUtil.formatCurrency(amount));
+            } else {
+                super.setValue(value);
+            }
+        }
     }
 }
 

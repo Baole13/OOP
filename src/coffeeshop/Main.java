@@ -1,9 +1,7 @@
 package coffeeshop;
-
+import coffeeshop.ui.LoginScreen;
 import java.awt.Font;
 import javax.swing.*;
-
-import coffeeshop.ui.LoginScreen;
 
 public class Main {
     public static void main(String[] args) {

@@ -1,16 +1,15 @@
 package coffeeshop.ui;
-
+import coffeeshop.database.FileDatabase;
+import coffeeshop.model.MenuItem;
+import coffeeshop.model.Order;
+import coffeeshop.model.OrderItem;
+import coffeeshop.util.FormatUtil;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-
-import coffeeshop.util.FormatUtil;
-import coffeeshop.database.FileDatabase;
-import coffeeshop.model.MenuItemSimple;
-import coffeeshop.model.OrderItemSimple;
-import coffeeshop.model.OrderSimple;
 
 public class CustomerMenuScreen extends JFrame {
     private String username;
@@ -18,7 +17,7 @@ public class CustomerMenuScreen extends JFrame {
     private JTable cartTable;
     private DefaultTableModel menuModel;
     private DefaultTableModel cartModel;
-    private List<OrderItemSimple> cart;
+    private List<OrderItem> cart;
     private JLabel totalLabel;
     
     public CustomerMenuScreen(String username) {
@@ -32,7 +31,6 @@ public class CustomerMenuScreen extends JFrame {
 
         JPanel mainPanel = Theme.gradientPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        
         
         JPanel menuPanel = new JPanel(new BorderLayout());
         Theme.styleCard(menuPanel);
@@ -48,6 +46,8 @@ public class CustomerMenuScreen extends JFrame {
         menuTable = new JTable(menuModel);
         Theme.styleTable(menuTable);
         menuTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        menuTable.getColumnModel().getColumn(2)
+                 .setCellRenderer(new CurrencyCellRenderer());
         loadMenu();
         
         JScrollPane menuScroll = new JScrollPane(menuTable);
@@ -68,9 +68,8 @@ public class CustomerMenuScreen extends JFrame {
             String name = (String) menuModel.getValueAt(selectedRow, 1);
             double price = (Double) menuModel.getValueAt(selectedRow, 2);
             
-            
             boolean found = false;
-            for (OrderItemSimple item : cart) {
+            for (OrderItem item : cart) {
                 if (item.getItemName().equals(name)) {
                     item.setQuantity(item.getQuantity() + 1);
                     found = true;
@@ -79,13 +78,12 @@ public class CustomerMenuScreen extends JFrame {
             }
             
             if (!found) {
-                cart.add(new OrderItemSimple(name, 1, price));
+                cart.add(new OrderItem(name, 1, price));
             }
             
             updateCartTable();
         });
         menuPanel.add(addToCartButton, BorderLayout.SOUTH);
-        
         
         JPanel cartPanel = new JPanel(new BorderLayout());
         Theme.styleCard(cartPanel);
@@ -100,10 +98,13 @@ public class CustomerMenuScreen extends JFrame {
         };
         cartTable = new JTable(cartModel);
         Theme.styleTable(cartTable);
+        cartTable.getColumnModel().getColumn(2)
+                 .setCellRenderer(new CurrencyCellRenderer());
+        cartTable.getColumnModel().getColumn(3)
+                 .setCellRenderer(new CurrencyCellRenderer());
         JScrollPane cartScroll = new JScrollPane(cartTable);
         cartScroll.setPreferredSize(new Dimension(400, 300));
         cartPanel.add(cartScroll, BorderLayout.CENTER);
-        
         
         JPanel cartButtonPanel = new JPanel(new FlowLayout());
         cartButtonPanel.setOpaque(false);
@@ -137,7 +138,7 @@ public class CustomerMenuScreen extends JFrame {
                 "Xác nhận", JOptionPane.YES_NO_OPTION);
             
             if (confirm == JOptionPane.YES_OPTION) {
-                OrderSimple order = new OrderSimple(FileDatabase.getNextOrderId(), username);
+                Order order = new Order(FileDatabase.getNextOrderId(), username);
                 cart.forEach(order::addItem);
                 
                 FileDatabase.addOrder(order);
@@ -153,14 +154,13 @@ public class CustomerMenuScreen extends JFrame {
         cartButtonPanel.add(removeButton);
         cartButtonPanel.add(placeOrderButton);
         
-        totalLabel = new JLabel("Tổng tiền: 0 VNĐ");
+        totalLabel = new JLabel("Tổng tiền: " + FormatUtil.formatCurrency(0));
         totalLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
         
         JPanel cartBottomPanel = new JPanel(new BorderLayout());
         cartBottomPanel.add(cartButtonPanel, BorderLayout.CENTER);
         cartBottomPanel.add(totalLabel, BorderLayout.SOUTH);
         cartPanel.add(cartBottomPanel, BorderLayout.SOUTH);
-        
         
         JPanel bottomPanel = new JPanel(new FlowLayout());
         bottomPanel.setOpaque(false);
@@ -178,7 +178,6 @@ public class CustomerMenuScreen extends JFrame {
         bottomPanel.add(viewHistoryButton);
         bottomPanel.add(logoutButton);
         
-        
         JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
         centerPanel.add(menuPanel, BorderLayout.WEST);
         centerPanel.add(cartPanel, BorderLayout.EAST);
@@ -192,8 +191,8 @@ public class CustomerMenuScreen extends JFrame {
     
     private void loadMenu() {
         menuModel.setRowCount(0);
-        List<MenuItemSimple> menu = FileDatabase.loadMenu();
-        for (MenuItemSimple item : menu) {
+        List<MenuItem> menu = FileDatabase.loadMenu();
+        for (MenuItem item : menu) {
             menuModel.addRow(new Object[]{
                 item.getId(),
                 item.getName(),
@@ -206,7 +205,7 @@ public class CustomerMenuScreen extends JFrame {
         cartModel.setRowCount(0);
         double total = 0.0;
         
-        for (OrderItemSimple item : cart) {
+        for (OrderItem item : cart) {
             double subtotal = item.getSubtotal();
             total += subtotal;
             cartModel.addRow(new Object[]{
@@ -221,7 +220,7 @@ public class CustomerMenuScreen extends JFrame {
     }
     
     private void showOrderHistory() {
-        List<OrderSimple> orders = FileDatabase.getOrdersByUsername(username);
+        java.util.List<Order> orders = FileDatabase.getOrdersByUsername(username);
         
         if (orders.isEmpty()) {
             JOptionPane.showMessageDialog(this, 
@@ -242,7 +241,7 @@ public class CustomerMenuScreen extends JFrame {
             }
         };
         
-        for (OrderSimple order : orders) {
+        for (Order order : orders) {
             historyModel.addRow(new Object[]{
                 order.getOrderId(),
                 order.getOrderTime().toString(),
@@ -258,7 +257,7 @@ public class CustomerMenuScreen extends JFrame {
             if (!e.getValueIsAdjusting()) {
                 int selectedRow = historyTable.getSelectedRow();
                 if (selectedRow != -1) {
-                    OrderSimple order = orders.get(selectedRow);
+                    Order order = orders.get(selectedRow);
                     showOrderDetails(order);
                 }
             }
@@ -269,13 +268,13 @@ public class CustomerMenuScreen extends JFrame {
         historyDialog.setVisible(true);
     }
     
-    private void showOrderDetails(OrderSimple order) {
+    private void showOrderDetails(Order  order) {
         StringBuilder details = new StringBuilder();
         details.append("Mã đơn: ").append(order.getOrderId()).append("\n");
         details.append("Thời gian: ").append(order.getOrderTime()).append("\n\n");
         details.append("Chi tiết đơn hàng:\n");
         
-        for (OrderItemSimple item : order.getItems()) {
+        for (OrderItem item : order.getItems()) {
             details.append("- ").append(item.getItemName())
                    .append(" x ").append(item.getQuantity())
                    .append(" = ").append(FormatUtil.formatCurrency(item.getSubtotal()))
@@ -288,15 +287,27 @@ public class CustomerMenuScreen extends JFrame {
             "Chi tiết đơn hàng", JOptionPane.INFORMATION_MESSAGE);
     }
     
-    private String summarizeItems(OrderSimple order) {
+    private String summarizeItems(Order order) {
         StringBuilder sb = new StringBuilder();
-        List<OrderItemSimple> its = order.getItems();
+        java.util.List<OrderItem> its = order.getItems();
         for (int i = 0; i < its.size(); i++) {
-            OrderItemSimple it = its.get(i);
+            OrderItem it = its.get(i);
             sb.append(it.getItemName()).append(" x ").append(it.getQuantity());
             if (i < its.size() - 1) sb.append(", ");
         }
         return sb.toString();
+    }
+
+    private static class CurrencyCellRenderer extends DefaultTableCellRenderer {
+        @Override
+        protected void setValue(Object value) {
+            if (value instanceof Number) {
+                double amount = ((Number) value).doubleValue();
+                setText(FormatUtil.formatCurrency(amount));
+            } else {
+                super.setValue(value);
+            }
+        }
     }
 }
 
