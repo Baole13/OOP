@@ -20,9 +20,9 @@ src/coffeeshop/
 ├── AdminMenuScreen.java      # Màn hình quản lý admin
 ├── FileDatabase.java         # Xử lý đọc/ghi file
 ├── User.java                 # Class quản lý người dùng
-├── MenuItemSimple.java       # Class quản lý món ăn
-├── OrderSimple.java          # Class quản lý đơn hàng
-└── OrderItemSimple.java      # Class quản lý chi tiết đơn hàng
+├── MenuItem.java       # Class quản lý món ăn
+├── Order.java          # Class quản lý đơn hàng
+└── OrderItem.java      # Class quản lý chi tiết đơn hàng
 ```
 
 ## Cách chạy chương trình
